@@ -1,0 +1,19 @@
+# ===============================
+# EMBEDDED WEB SERVER
+# ===============================
+server.port: 8080
+server.servlet.context-path: /timetable
+# ===============================
+# Document-based Database - MongoDB
+# ===============================
+spring.data.mongodb.host: localhost
+spring.data.mongodb.port: 27017
+spring.data.mongodb.database: timetable
+# ===============================
+# Custom Static Data
+# ===============================
+custom.initdata.clear: true
+custom.initdata.audiences: 201,202,204,205,206,207,208,210,211,212,213,214,215,217,217a,218,218a
+custom.initdata.groups: 1012,1013,3022,АСВ 31-18,МА 10-30,ПД 911
+custom.initdata.lecturers: Елена Валерьевна,Максим Константинович,Михаил Анатольевич,Оксана Владимировна,Татьяна Владимировна,Юрий Валериевич
+custom.initdata.timeintervals: 9:00-10:20,10:30-11:50,12:00-13:20,13:30-14:50,15:00-16:20,16:30-17:50,18:00-19:20,19:30-20:50,21:00-22:20

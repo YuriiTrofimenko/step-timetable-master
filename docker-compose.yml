@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+
+  step-timetable-mongo:
+    container_name: step-timetable-mongo
+    image: mongo:3.2.4
+    ports:
+      - 27018:27017
+    command: --smallfiles
+    networks:
+      - step_timetable_net
+
+  step-timetable-backend:
+    container_name: step-timetable-backend
+    build:
+      context: ./step-timetable-backend
+      dockerfile: ./Dockerfile
+    volumes:
+      - ~/.m2:/root/.m2
+    ports:
+      - 8080:8080
+    depends_on:
+      - step-timetable-mongo
+    command: ["./wait-for-it.sh", "step-timetable-mongo:27018", "--", "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=docker", "-X"]
+    networks:
+      - step_timetable_net
+    environment:
+      - CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
+
+  step-timetable-frontend:
+    container_name: step-timetable-frontend
+    build:
+      context: ./step-timetable-frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - step-timetable-mongo
+      - step-timetable-backend
+    command: ["npm", "start"]
+    networks:
+      - step_timetable_net
+    environment:
+      - REACT_APP_CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
+
+networks:
+  step_timetable_net:
+    driver: bridge
