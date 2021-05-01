@@ -30,18 +30,18 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final TimeIntervalTemplateRepository timeIntervalTemplateRepository;
     private final AudienceRepository audienceRepository;
-    private final LessonRepository lessonRepository;
+    // private final LessonRepository lessonRepository;
 
     public TimeIntervalReactiveService(
         SimpMessagingTemplate simpMessagingTemplate,
         TimeIntervalTemplateRepository timeIntervalTemplateRepository,
-        AudienceRepository audienceRepository,
-        LessonRepository lessonRepository
+        AudienceRepository audienceRepository// ,
+        // LessonRepository lessonRepository
     ) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.timeIntervalTemplateRepository = timeIntervalTemplateRepository;
         this.audienceRepository = audienceRepository;
-        this.lessonRepository = lessonRepository;
+        // this.lessonRepository = lessonRepository;
     }
 
     @Override
@@ -151,6 +151,10 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
             "/topic/intervals",
             timeIntervalList
         );
+    }
+
+    public void resetAppliedTemplateIndex () {
+        appliedTemplateIndex = null;
     }
 
     public void reviseTimeIntervals () {

@@ -19,6 +19,6 @@ import java.util.List;
 public class TimeIntervalTemplateModel {
     @Id
     private String id;
-    private Integer dayOfWeekNumber;
+    private String dayOfWeekNumber;
     private List<TimeIntervalModel> timeIntervalModels;
 }

@@ -56,8 +56,7 @@ public class DashboardApplication {
 	private TimeIntervalReactiveService timeIntervalReactiveService;
 
 	public static void main (String[] args) {
-		System.out.println("MyTag");
-		System.getenv().entrySet().forEach(System.out::println);
+		// System.getenv().entrySet().forEach(System.out::println);
 		SpringApplication.run(DashboardApplication.class, args);
 	}
 
@@ -193,7 +192,7 @@ public class DashboardApplication {
 				for (int i = 1; i <= 7; i++) {
 					timeIntervalTemplates.add(
 						TimeIntervalTemplateModel.builder()
-							.dayOfWeekNumber(i)
+							.dayOfWeekNumber(String.valueOf(i))
 							.timeIntervalModels(CopyMaker.deepCopy(timeIntervalModelsDefault))
 							.build()
 					);

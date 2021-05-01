@@ -64,4 +64,10 @@ public class TimeIntervalController implements IRestControllerBase<TimeIntervalM
     ) {
         timeIntervalService.deleteLesson(timeIntervalId, lessonId);
     }
+
+    @GetMapping("/reset")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void reset() {
+        timeIntervalService.resetAppliedTemplateIndex();
+    }
 }
