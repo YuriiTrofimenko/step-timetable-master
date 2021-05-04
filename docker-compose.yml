@@ -4,7 +4,7 @@ services:
 
   step-timetable-mongo:
     container_name: step-timetable-mongo
-    image: mongo:3.2.4
+    image: mongo:3.6.23
     ports:
       - 27018:27017
     command: --smallfiles
