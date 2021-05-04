@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'mobx-react'
-import {ErrorBoundary, withErrorBoundary} from 'react-error-boundary'
+import {ErrorBoundary} from 'react-error-boundary'
 import routerStore from './stores/RouterStore'
 import commonStore from './stores/CommonStore'
 import userStore from './stores/UserStore'
@@ -9,6 +9,8 @@ import headerCardStore from './stores/HeaderCardStore'
 import timeIntervalStore from './stores/TimeIntervalStore'
 import groupStore from './stores/GroupStore'
 import lecturerStore from './stores/LecturerStore'
+import dayOfWeekStore from './stores/DayOfWeekStore'
+import timeIntervalTemplateStore from './stores/TimeIntervalTemplateStore'
 import './index.css'
 import App from './components/App'
 import reportWebVitals from './reportWebVitals'
@@ -21,7 +23,9 @@ const stores = {
   headerCardStore,
   timeIntervalStore,
   groupStore,
-  lecturerStore
+  lecturerStore,
+  dayOfWeekStore,
+  timeIntervalTemplateStore
 }
 
 ReactDOM.render(

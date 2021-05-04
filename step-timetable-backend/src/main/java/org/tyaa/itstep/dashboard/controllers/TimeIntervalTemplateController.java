@@ -1,73 +1,96 @@
 package org.tyaa.itstep.dashboard.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.tyaa.itstep.dashboard.models.LessonModel;
-import org.tyaa.itstep.dashboard.models.TimeIntervalModel;
-import org.tyaa.itstep.dashboard.models.TimeIntervalTemplateModel;
+import org.tyaa.itstep.dashboard.models.ResponseModel;
 import org.tyaa.itstep.dashboard.services.TimeIntervalReactiveService;
-import org.tyaa.itstep.dashboard.services.TimeIntervalTemplateReactiveService;
+import org.tyaa.itstep.dashboard.services.TimeIntervalTemplateService;
 
 @RestController
 @RequestMapping("/api/templates")
-public class TimeIntervalTemplateController implements IRestControllerBase<TimeIntervalTemplateModel, String> {
+public class TimeIntervalTemplateController {
 
-    final TimeIntervalTemplateReactiveService templateService;
+    final TimeIntervalTemplateService templateService;
+    final TimeIntervalReactiveService timeIntervalReactiveService;
 
-    public TimeIntervalTemplateController(TimeIntervalTemplateReactiveService templateService) {
+    public TimeIntervalTemplateController(
+        TimeIntervalTemplateService templateService,
+        TimeIntervalReactiveService timeIntervalReactiveService
+    ) {
         this.templateService = templateService;
+        this.timeIntervalReactiveService = timeIntervalReactiveService;
+    }
+
+    @GetMapping("/apply")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void apply () {
+        timeIntervalReactiveService.resetAppliedTemplateIndex();
     }
 
     @PostMapping("/byDayOfWeekNumber/{dayOfWeekNumber}/intervals/{timeIntervalId}/lessons")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void createLesson(
+    public ResponseEntity<ResponseModel> createLesson(
         @PathVariable Integer dayOfWeekNumber,
         @PathVariable String timeIntervalId,
         @RequestBody LessonModel lessonModel
     ) {
-        templateService.createLesson(dayOfWeekNumber, timeIntervalId, lessonModel);
+        ResponseModel responseModel =
+            templateService.createLesson(dayOfWeekNumber, timeIntervalId, lessonModel);
+        HttpStatus httpStatus;
+        if (responseModel.getStatus().equals(ResponseModel.SUCCESS_STATUS)) {
+            httpStatus = HttpStatus.CREATED;
+        } else {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(responseModel, httpStatus);
     }
 
-    @Override
-    public void create(TimeIntervalTemplateModel model) {
-        // not implemented
-    }
-
-    @Override
-    @GetMapping("")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void request() {
-        templateService.request();
-    }
-
-    @Override
-    public void update(TimeIntervalTemplateModel model) {
-        // not implemented
-    }
-
-    @Override
-    public void delete(String s) {
-        // not implemented
+    @GetMapping("/byDayOfWeekNumber/{dayOfWeekNumber}/intervals")
+    public ResponseEntity<ResponseModel> getIntervalsByDayOfWeek(@PathVariable Integer dayOfWeekNumber) {
+        ResponseModel responseModel =
+            templateService.getIntervalsByDayOfWeek(dayOfWeekNumber);
+        HttpStatus httpStatus;
+        if (responseModel.getStatus().equals(ResponseModel.SUCCESS_STATUS)) {
+            httpStatus = HttpStatus.OK;
+        } else {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(responseModel, httpStatus);
     }
 
     @PutMapping("/byDayOfWeekNumber/{dayOfWeekNumber}/intervals/{timeIntervalId}/lessons/{lessonId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateLesson(
+    public ResponseEntity<ResponseModel> updateLesson(
         @PathVariable Integer dayOfWeekNumber,
         @PathVariable String timeIntervalId,
         @PathVariable String lessonId,
         @RequestBody LessonModel lessonModel
     ) {
-        templateService.updateLesson(dayOfWeekNumber, timeIntervalId, lessonId, lessonModel);
+        ResponseModel responseModel =
+            templateService.updateLesson(dayOfWeekNumber, timeIntervalId, lessonId, lessonModel);
+        HttpStatus httpStatus;
+        if (responseModel.getStatus().equals(ResponseModel.SUCCESS_STATUS)) {
+            httpStatus = HttpStatus.OK;
+        } else {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(responseModel, httpStatus);
     }
 
     @DeleteMapping("/byDayOfWeekNumber/{dayOfWeekNumber}/intervals/{timeIntervalId}/lessons/{lessonId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(
+    public ResponseEntity<ResponseModel> delete(
         @PathVariable Integer dayOfWeekNumber,
         @PathVariable String timeIntervalId,
         @PathVariable String lessonId
     ) {
-        templateService.deleteLesson(dayOfWeekNumber, timeIntervalId, lessonId);
+        ResponseModel responseModel =
+            templateService.deleteLesson(dayOfWeekNumber, timeIntervalId, lessonId);
+        HttpStatus httpStatus;
+        if (responseModel.getStatus().equals(ResponseModel.SUCCESS_STATUS)) {
+            httpStatus = HttpStatus.NO_CONTENT;
+        } else {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(responseModel, httpStatus);
     }
 }

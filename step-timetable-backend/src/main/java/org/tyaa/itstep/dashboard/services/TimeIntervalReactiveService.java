@@ -185,7 +185,6 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
                                                 System.out.println("lessonModel = " + lessonModelOptional.get());
                                             } */
                                             if (!lessonModelOptional.isPresent()) {
-
                                                 timeIntervalModel.getLessons().add(
                                                     LessonModel.builder()
                                                         .id(ObjectId.get().toString())

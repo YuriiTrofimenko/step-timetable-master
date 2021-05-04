@@ -10,6 +10,7 @@ import UserModel from "../models/UserModel"
 import userStore from "./UserStore"
 import GroupEditor from '../components/pages/admin/GroupEditor'
 import LecturerEditor from '../components/pages/admin/LecturerEditor'
+import Templates from '../components/pages/admin/Templates'
 
 class RouterStore {
 
@@ -28,6 +29,7 @@ class RouterStore {
     { uri: '/audiences', name: 'Аудитории', Component: AudienceEditor },
     { uri: '/groups', name: 'Группы', Component: GroupEditor },
     { uri: '/lecturers', name: 'Преподаватели', Component: LecturerEditor },
+    { uri: '/templates', name: 'Шаблоны', Component: Templates },
     { uri: '/about', name: 'О программе', Component: About },
     { uri: '/auth:out', name: 'Выйти', Component: Home }
   ]
@@ -39,6 +41,7 @@ class RouterStore {
       { uri: '/audiences', name: 'Аудитории', Component: AudienceEditor },
       { uri: '/groups', name: 'Группы', Component: GroupEditor },
       { uri: '/lecturers', name: 'Преподаватели', Component: LecturerEditor },
+      { uri: '/templates', name: 'Шаблоны', Component: Templates },
       { uri: '/about', name: 'О программе', Component: About },
       { uri: '/auth:out', name: 'Выйти', Component: Home }
   ]

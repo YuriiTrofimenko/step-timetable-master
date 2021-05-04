@@ -93,7 +93,8 @@ class AppBarCollapse extends Component<IProps, IState> {
                           to={route.uri}
                           className={classes.mobileButtonBarItem}
                           activeClassName={classes.mobileButtonBarItemActive}
-                          exact>
+                          exact
+                      >
                           {route.name}
                       </NavLink>
                   </MenuItem>

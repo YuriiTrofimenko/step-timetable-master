@@ -63,6 +63,7 @@ class ButtonAppBarCollapse extends Component<IProps, IState> {
                     }}
                     open={open}
                     onClose={this.handleClose}
+                    onClick={this.handleClose}
                 >
                     {this.props.children}
                 </Menu>

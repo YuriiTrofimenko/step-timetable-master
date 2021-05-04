@@ -8,12 +8,13 @@ import history from '../history'
 import {CommonStore} from '../stores/CommonStore'
 import { RouterStore } from '../stores/RouterStore'
 import { UserStore } from '../stores/UserStore'
-import { AppBar, Toolbar, Typography, Container, Modal, Collapse } from '@material-ui/core'
+import {AppBar, Toolbar, Typography, Container, Modal, Collapse, Snackbar} from '@material-ui/core'
 import { ExpandLess, ExpandMore } from "@material-ui/icons"
 import { inject, observer } from 'mobx-react'
 import { CSSTransition } from 'react-transition-group'
 import AppBarCollapse from './common/AppBarCollapse'
 import { reaction } from 'mobx'
+import {Alert} from '@material-ui/lab'
 
 interface IProps {}
 
@@ -99,17 +100,29 @@ class App extends Component<IProps, IState> {
       }
     }
   )
+    /* routeReaction = reaction(
+        () => this.injected.routerStore.routes,
+        (route) => {
+            this.toggleVisibilityHandler()
+        }
+    ) */
   handleErrorModalClose = () => {
     this.injected.commonStore.setError(null)
   }
   toggleVisibilityHandler = () => {
     this.setState({ visibility: !this.state.visibility });
   }
+    handleSnackBarClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.injected.commonStore.setSnackbarText('')
+        this.injected.commonStore.setSnackbarSeverity('success')
+    }
   render () {
     const { routes } = this.injected.routerStore
     const { classes } = this.injected
     history.listen(location => {
-      console.log('location', location)
       if (location.pathname === '/auth:out') {
         this.injected.userStore.logout()
       }
@@ -135,7 +148,10 @@ class App extends Component<IProps, IState> {
                     <Typography variant='h6' className={classes.title}>
                         ШАГ - Расписание
                     </Typography>
-                    <AppBarCollapse routes={routes} userStore={this.injected.userStore} />
+                    <AppBarCollapse
+                        routes={routes}
+                        userStore={this.injected.userStore}
+                    />
                 </Toolbar>
             </AppBar>
           </Collapse>
@@ -169,6 +185,13 @@ class App extends Component<IProps, IState> {
                   {this.injected.commonStore.error}
               </div>
           </Modal>
+            <Snackbar
+                open={Boolean(this.injected.commonStore.snackbarText)}
+                autoHideDuration={6000} onClose={this.handleSnackBarClose}>
+                <Alert onClose={this.handleSnackBarClose} severity={this.injected.commonStore.snackbarSeverity}>
+                    {this.injected.commonStore.snackbarText}
+                </Alert>
+            </Snackbar>
         </div>
       </Router>
     )

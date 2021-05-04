@@ -12,6 +12,7 @@ spring.data.mongodb.database: timetable
 # ===============================
 # Custom Static Data
 # ===============================
+custom.external.ip: localhost
 custom.initdata.clear: true
 custom.initdata.audiences: 201,202,204,205,206,207,208,210,211,212,213,214,215,217,217a,218,218a
 custom.initdata.groups: 1012,1013,3022,АСВ 31-18,МА 10-30,ПД 911

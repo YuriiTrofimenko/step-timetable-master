@@ -6,12 +6,15 @@ import groupStore from './GroupStore'
 import lecturerStore from './LecturerStore'
 import timeIntervalStore from './TimeIntervalStore'
 import TimeIntervalModel from '../models/TimeIntervalModel'
+import {Color} from '@material-ui/lab'
 
 class CommonStore {
 
     @observable loading: boolean = false
     @observable error: string | null = null
-    private IP_ADDRESS: string = process.env.REACT_APP_CUSTOM_EXTERNAL_IP || 'localhost'
+    @observable snackbarText: string = ''
+    @observable snackbarSeverity: Color = 'success'
+    private IP_ADDRESS: string = process.env.REACT_APP_CUSTOM_EXTERNAL_IP ?? 'localhost'
     public BASE_URL: string = `http://${this.IP_ADDRESS}:8080/timetable`
     public BASE_API_URL: string = `${this.BASE_URL}/api`
     public BASE_WEBSOCKET_URL: string = `${this.BASE_URL}/websocket`
@@ -72,6 +75,14 @@ class CommonStore {
 
     @action setError(error: string | null): void {
         this.error = error
+    }
+
+    @action setSnackbarText(text: string): void {
+        this.snackbarText = text
+    }
+
+    @action setSnackbarSeverity(severityString: Color): void {
+        this.snackbarSeverity = severityString
     }
 
     @action clearError(): void {

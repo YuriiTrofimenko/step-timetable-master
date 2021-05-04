@@ -2,27 +2,24 @@ import React, { Component } from 'react'
 import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles'
 import {inject, observer} from 'mobx-react'
 import { HeaderCardStore } from '../../../stores/HeaderCardStore'
-import { TimeIntervalStore } from '../../../stores/TimeIntervalStore'
 import { GroupStore } from '../../../stores/GroupStore'
 import { LecturerStore } from '../../../stores/LecturerStore'
+import { DayOfWeekStore } from '../../../stores/DayOfWeekStore'
+import { TimeIntervalTemplateStore } from '../../../stores/TimeIntervalTemplateStore'
 import { Grid, Card, CardContent, Typography, Button, Box, Dialog, DialogTitle, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select/*, TextField */ } from '@material-ui/core'
-// import dateTimeFormatter from 'date-and-time'
-// import LessonCardModel from '../../../models/LessonCardModel'
 
-// type for the explicitly provided props only
 interface IProps {}
 
-// type for the injected and explicitly provided props
 interface IInjectedProps extends WithStyles<typeof styles>, IProps {
+  dayOfWeekStore: DayOfWeekStore,
+  timeIntervalTemplateStore: TimeIntervalTemplateStore,
   headerCardStore: HeaderCardStore,
-  timeIntervalStore: TimeIntervalStore,
   groupStore: GroupStore,
   lecturerStore: LecturerStore
 }
 
 interface IState {
-  lessonDialogOpen: boolean,
-  currentTemplateId: number | null
+  lessonDialogOpen: boolean
 }
 
 const styles = (theme: Theme) => createStyles({
@@ -34,6 +31,16 @@ const styles = (theme: Theme) => createStyles({
       paddingBottom: 1,
       paddingTop: 1
     }
+  },
+  buttonsBlock: {
+    margin: 10
+  },
+  dayOfWeekButton: {
+    width: '100%'
+  },
+  dayOfWeekButtonActive: {
+    width: '100%',
+    fontWeight: 'bold'
   },
   cardsCell: {
     display: 'flex',
@@ -47,16 +54,6 @@ const styles = (theme: Theme) => createStyles({
     }
   },
   card: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    boxSizing: 'border-box',
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'space-evenly'
-  },
-  currentTimeIntervalCard: {
-    backgroundColor: '#0a95dd',
-    color: '#fff',
     display: 'flex',
     flexWrap: 'wrap',
     boxSizing: 'border-box',
@@ -87,7 +84,7 @@ const styles = (theme: Theme) => createStyles({
   }
 })
 
-@inject('headerCardStore', 'timeIntervalStore', 'groupStore', 'lecturerStore')
+@inject('dayOfWeekStore', 'timeIntervalTemplateStore', 'headerCardStore', 'groupStore', 'lecturerStore')
 @observer
 class Templates extends Component<IProps, IState> {
   public intervalID: number
@@ -95,47 +92,46 @@ class Templates extends Component<IProps, IState> {
     super(props)
     this.intervalID = 0
     this.state = {
-      lessonDialogOpen: false,
-      currentTemplateId: null
+      lessonDialogOpen: false
     }
   }
   get injected() {
     return this.props as IInjectedProps
   }
-  componentDidMount () {
-    // this.injected.headerCardStore.fetchHeaderCardList()
-    // this.injected.timeIntervalStore.fetchTimeIntervalList()
-    // this.injected.groupStore.fetchGroupList()
-    // this.injected.lecturerStore.fetchLecturerList()
+  dayOfWeekSelectedHandler = (dayOfWeekNumber: number) => {
+    this.injected.dayOfWeekStore.setDayOfWeekNumber(dayOfWeekNumber)
+    this.injected.timeIntervalTemplateStore.fetchTemplateIntervalListByDay(dayOfWeekNumber)
+  }
+  applyTodayHandler = () => {
+    this.injected.timeIntervalTemplateStore.applyTemplates()
   }
   lessonCardClickHandler = (intervalRowId: number | null, lessonCardId: number | null) => {
-    this.injected.timeIntervalStore.setSelectedLessonCard(intervalRowId, lessonCardId)
+    this.injected.timeIntervalTemplateStore.setSelectedLessonCard(intervalRowId, lessonCardId)
     this.setState({lessonDialogOpen: true})
   }
   lessonDialogClosedHandler = () => {
-    // console.log('selectedLessonCard', this.injected.timeIntervalStore.selectedLessonCard)
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   lessonDialogCancelHandler = () => {
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   lessonDialogDeleteHandler = () => {
-    this.injected.timeIntervalStore.deleteLessonCard()
+    this.injected.timeIntervalTemplateStore.deleteLessonCard()
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   lessonDialogOkHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    this.injected.timeIntervalStore.saveLessonCard()
+    this.injected.timeIntervalTemplateStore.saveLessonCard()
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   groupSelectedHandler = (e: React.ChangeEvent<{ value: unknown }>) => {
     const lessonCardGroupId = e.target.value
     if (typeof lessonCardGroupId === 'string') {
-      this.injected.timeIntervalStore.setLessonCardGroupId(lessonCardGroupId)
+      this.injected.timeIntervalTemplateStore.setLessonCardGroupId(lessonCardGroupId)
       document?.getElementById('groupValidator')
         ?.setAttribute('value', lessonCardGroupId)
     }
@@ -143,7 +139,7 @@ class Templates extends Component<IProps, IState> {
   lecturerSelectedHandler = (e: React.ChangeEvent<{ value: unknown }>) => {
     const lessonCardLecturerId = e.target.value
     if (typeof lessonCardLecturerId === 'string') {
-      this.injected.timeIntervalStore.setLessonCardLecturerId(lessonCardLecturerId)
+      this.injected.timeIntervalTemplateStore.setLessonCardLecturerId(lessonCardLecturerId)
       document?.getElementById('lecturerValidator')
         ?.setAttribute('value', lessonCardLecturerId)
     }
@@ -151,7 +147,6 @@ class Templates extends Component<IProps, IState> {
   render () {
     const { classes } = this.injected
     const { headerCardList } = this.injected.headerCardStore
-    // calculation of width for all the cards by the width of the screen 
     const cardWith =
       ((document.body.clientWidth - 143) / (headerCardList.length + 1)).toFixed(0)
     const cardStyle = {'width': cardWith + 'px'}
@@ -160,11 +155,34 @@ class Templates extends Component<IProps, IState> {
       selectedLessonCard,
       lessonCardGroupId,
       lessonCardLecturerId
-    } = this.injected.timeIntervalStore
+    } = this.injected.timeIntervalTemplateStore
     const { groupList } = this.injected.groupStore
     const { lecturerList } = this.injected.lecturerStore
+    const { dayOfWeekModels, selectedDayOfWeekNumber } = this.injected.dayOfWeekStore
     return (
       <>
+        <Grid container spacing={3} className={classes.buttonsBlock}>
+          {
+            dayOfWeekModels.map((day, dayIdx) => (
+                <Grid item xs={1} key={dayIdx}>
+                  <Button
+                      variant='outlined'
+                      className={selectedDayOfWeekNumber === day.dayNumber ? classes.dayOfWeekButtonActive : classes.dayOfWeekButton}
+                      onClick={() => this.dayOfWeekSelectedHandler(day.dayNumber)}>
+                    {day.dayName}
+                  </Button>
+                </Grid>
+            ))
+          }
+          <Grid item xs={2} key={'applyTodayGridItem'}>
+            <Button
+                variant='outlined'
+                color='primary'
+                onClick={this.applyTodayHandler}>
+              Применить сегодня
+            </Button>
+          </Grid>
+        </Grid>
         <Grid container spacing={3} className={classes.root}>
           <Grid item xs={12} className={classes.cardsCell}>
             <Box component='span'>
@@ -195,7 +213,7 @@ class Templates extends Component<IProps, IState> {
               <Grid item xs={12} className={classes.cardsCell} key={intervalIdx}>
                 <Box component='span'>
                   <Card
-                    className={(this.injected.timeIntervalStore.currentTimeIntervalId === timeIntervalModel.id) ? classes.currentTimeIntervalCard : classes.card}
+                    className={classes.card}
                     style={cardStyle}>
                     <CardContent>
                       <Typography variant="subtitle1">
@@ -214,17 +232,28 @@ class Templates extends Component<IProps, IState> {
                         className={classes.lessonCard}
                         style={cardStyle}
                         onClick={() => {
-                          this.lessonCardClickHandler(timeIntervalModel.id || null, lessonCardModel.id || null)
+                          this.lessonCardClickHandler(
+                              timeIntervalModel.id || null,
+                              lessonCardModel.id || null
+                          )
                         }}>
                         <CardContent>
                           <Typography variant="caption" display="block">
-                            {(lessonCardModel.groupId && lessonCardModel.lecturerId) ? lessonCardModel.audienceNumber : ''}
+                            {
+                              (lessonCardModel.groupId && lessonCardModel.lecturerId)
+                                ? lessonCardModel.audienceNumber
+                                : ''
+                            }
                           </Typography>
                           <Typography variant="body2" component="p">
                             {groupList.find(group => group.id === lessonCardModel.groupId)?.name}
                           </Typography>
                           <Typography variant="caption" display="block">
-                            {lecturerList.find(lecturer => lecturer.id === lessonCardModel.lecturerId)?.name}
+                            {
+                              lecturerList.find(
+                                lecturer => lecturer.id === lessonCardModel.lecturerId
+                              )?.name
+                            }
                           </Typography>
                         </CardContent>
                       </Card>
@@ -244,8 +273,6 @@ class Templates extends Component<IProps, IState> {
               {selectedLessonCard?.lecturerId ? 'Изменить занятие' : 'Создать занятие'}
             </DialogTitle>
             <DialogContent>
-              {/* <ValidatorForm
-                onError={(errors: any) => console.log(errors)}> */}
                 <FormControl fullWidth>
                   <InputLabel id="group-select-label">Группа</InputLabel>
                   <Select
@@ -300,7 +327,6 @@ class Templates extends Component<IProps, IState> {
                     required={true}
                   />
                 </FormControl>
-              {/* </ValidatorForm> */}
             </DialogContent>
             <DialogActions>
               <Button onClick={this.lessonDialogCancelHandler}>

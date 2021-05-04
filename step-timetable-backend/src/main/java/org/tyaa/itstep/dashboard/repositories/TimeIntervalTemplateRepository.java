@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
 import java.math.BigInteger;
 
 @Repository
-public interface TimeIntervalTemplateRepository extends ReactiveMongoRepository<TimeIntervalTemplateModel, String> {
+public interface TimeIntervalTemplateRepository extends ReactiveMongoRepository<TimeIntervalTemplateModel, Integer> {
     Mono<TimeIntervalTemplateModel> findTimeIntervalTemplateModelByDayOfWeekNumber(Integer dayOfWeekNumber);
 }

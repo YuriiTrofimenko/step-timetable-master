@@ -1,5 +1,6 @@
 package org.tyaa.itstep.dashboard;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,12 +13,14 @@ import org.tyaa.itstep.dashboard.models.*;
 import org.tyaa.itstep.dashboard.repositories.*;
 import org.tyaa.itstep.dashboard.services.TimeIntervalReactiveService;
 import org.tyaa.itstep.dashboard.utils.CopyMaker;
+import org.tyaa.itstep.dashboard.utils.Utf8Encoder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -116,14 +119,7 @@ public class DashboardApplication {
 	private void createAudiences () {
 		audienceRepository.saveAll(
 			audienceNumbers.stream()
-				.map(s -> {
-					try {
-						return AudienceModel.builder().audienceNumber(URLEncoder.encode(s, StandardCharsets.UTF_8.toString())).build();
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-						return AudienceModel.builder().audienceNumber(s).build();
-					}
-				})
+				.map(s -> AudienceModel.builder().audienceNumber(Utf8Encoder.encode(s)).build())
 				.collect(Collectors.toList())
 		).subscribe(
 			audienceModel -> {},
@@ -135,14 +131,7 @@ public class DashboardApplication {
 	private void createGroups () {
 		groupRepository.saveAll(
 			groupNames.stream()
-				.map(g -> {
-					try {
-						return GroupModel.builder().name(URLEncoder.encode(g, StandardCharsets.UTF_8.toString())).build();
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-						return GroupModel.builder().name(g).build();
-					}
-				})
+				.map(g -> GroupModel.builder().name(Utf8Encoder.encode(g)).build())
 				.collect(Collectors.toList())
 		).subscribe(
 			groupModel -> {},
@@ -154,14 +143,7 @@ public class DashboardApplication {
 	private void createLecturers () {
 		lecturerRepository.saveAll(
 			lecturerNames.stream()
-				.map(l -> {
-					try {
-						return LecturerModel.builder().name(URLEncoder.encode(l, StandardCharsets.UTF_8.toString())).build();
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-						return LecturerModel.builder().name(l).build();
-					}
-				})
+				.map(l -> LecturerModel.builder().name(Utf8Encoder.encode(l)).build())
 				.collect(Collectors.toList())
 		).subscribe(
 			lecturerModel -> {},
@@ -177,12 +159,22 @@ public class DashboardApplication {
 					final String[] intervalBounds = ti.split("-");
 					final String intervalStart = intervalBounds[0];
 					final String intervalEnd = intervalBounds[1];
-					return TimeIntervalModel.builder()
-						.pairNumber(++pairCounter)
-						.intervalStart(intervalStart)
-						.intervalEnd(intervalEnd)
-						.lessons(new ArrayList<>())
-						.build();
+					TimeIntervalModel timeIntervalModel =
+						TimeIntervalModel.builder()
+							.pairNumber(++pairCounter)
+							.intervalStart(intervalStart)
+							.intervalEnd(intervalEnd)
+							.lessons(new ArrayList<>())
+							.build();
+					audienceRepository.findAll().subscribe(
+						audienceModel -> timeIntervalModel.getLessons().add(
+							LessonModel.builder()
+								.id(ObjectId.get().toString())
+								.audienceNumber(audienceModel.getAudienceNumber())
+								.build()
+						)
+					);
+					return timeIntervalModel;
 				})
 				.collect(Collectors.toList());
 		pairCounter = 0;
@@ -192,7 +184,7 @@ public class DashboardApplication {
 				for (int i = 1; i <= 7; i++) {
 					timeIntervalTemplates.add(
 						TimeIntervalTemplateModel.builder()
-							.dayOfWeekNumber(String.valueOf(i))
+							.dayOfWeekNumber(i)
 							.timeIntervalModels(CopyMaker.deepCopy(timeIntervalModelsDefault))
 							.build()
 					);
