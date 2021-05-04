@@ -159,9 +159,10 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
 
     public void reviseTimeIntervals () {
         Date currentDate = new Date();
-        // System.out.println("appliedTemplateIndex = " + appliedTemplateIndex);
-        // System.out.println("currentDate.getHours() = " + currentDate.getHours());
-        // System.out.println("currentDate.getHours() = " + currentDate.getHours());
+        System.out.println("appliedTemplateIndex = " + appliedTemplateIndex);
+        System.out.println("currentDate.getDay() = " + currentDate.getDay());
+        System.out.println("currentDate.getHours() = " + currentDate.getHours());
+        System.out.println(" *** ");
         if (appliedTemplateIndex == null && currentDate.getHours() >= 8 && currentDate.getHours() < 23) {
             appliedTemplateIndex = currentDate.getDay();
             timeIntervalTemplateRepository

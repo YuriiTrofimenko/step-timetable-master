@@ -18,8 +18,10 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ~/.m2:/root/.m2
+      #- /etc/timezone:/etc/timezone:ro
+      #- /etc/localtime:/etc/localtime:ro
     ports:
-      - 8080:8080
+      - ${ITSTEP_TIMETABLE_BACKEND_PORT}:8080
     depends_on:
       - step-timetable-mongo
     command: ["./wait-for-it.sh", "step-timetable-mongo:27018", "--", "mvn", "spring-boot:run", "-Dspring-boot.run.profiles=docker", "-X"]
@@ -27,6 +29,7 @@ services:
       - step_timetable_net
     environment:
       - CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
+      - CUSTOM_EXTERNAL_BACKEND_PORT=${ITSTEP_TIMETABLE_BACKEND_PORT}
 
   step-timetable-frontend:
     container_name: step-timetable-frontend
@@ -43,6 +46,7 @@ services:
       - step_timetable_net
     environment:
       - REACT_APP_CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
+      - REACT_APP_CUSTOM_EXTERNAL_BACKEND_PORT=${ITSTEP_TIMETABLE_BACKEND_PORT}
 
 networks:
   step_timetable_net:

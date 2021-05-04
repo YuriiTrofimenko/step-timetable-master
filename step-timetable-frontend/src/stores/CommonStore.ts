@@ -15,15 +15,14 @@ class CommonStore {
     @observable snackbarText: string = ''
     @observable snackbarSeverity: Color = 'success'
     private IP_ADDRESS: string = process.env.REACT_APP_CUSTOM_EXTERNAL_IP ?? 'localhost'
-    public BASE_URL: string = `http://${this.IP_ADDRESS}:8080/timetable`
+    private API_PORT: string = process.env.REACT_APP_CUSTOM_EXTERNAL_BACKEND_PORT ?? '8080'
+    public BASE_URL: string = `http://${this.IP_ADDRESS}:${this.API_PORT}/timetable`
     public BASE_API_URL: string = `${this.BASE_URL}/api`
     public BASE_WEBSOCKET_URL: string = `${this.BASE_URL}/websocket`
 
     // for MobX version 6
     constructor() {
         console.log('process.env = ', process.env)
-        console.log('IP_ADDRESS = ', process.env.CUSTOM_EXTERNAL_IP)
-        console.log('IP_ADDRESS = ', this.IP_ADDRESS)
         makeObservable(this)
     }
 
