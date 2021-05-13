@@ -31,7 +31,8 @@ const styles = (theme: Theme) => createStyles({
             tableLayout: 'auto',
             borderCollapse: 'collapse',
             '& td': {
-                minWidth: 'max-content'
+                // minWidth: 'max-content'
+                minWidth: 200
             }
         },
         audiencesTableColumnsHeader: {

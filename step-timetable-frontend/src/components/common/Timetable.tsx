@@ -48,9 +48,10 @@ const styles = (theme: Theme) => createStyles({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     '& span': {
-      margin: 0,
+      overflowWrap: 'break-word'
+      /* margin: 0,
       flexGrow: 1,
-      display: 'flex'
+      display: 'flex' */
     }
   },
   card: {
@@ -72,7 +73,7 @@ const styles = (theme: Theme) => createStyles({
     justifyContent: 'space-evenly'
   },
   lessonCard: {
-    textAlign: 'left',
+    textAlign: 'center',
     '& > div': {
       padding: '5px',
       '& > span': {
@@ -300,12 +301,12 @@ class Timetable extends Component<IProps, IState> {
                     className={(this.injected.timeIntervalStore.currentTimeIntervalId === timeIntervalModel.id) ? classes.currentTimeIntervalCard : classes.card}
                     style={cardStyle}>
                     <CardContent>
-                      <Typography variant="subtitle1">
-                        {timeIntervalModel.intervalStart}
-                      </Typography>
-                      <Typography variant="subtitle1">
-                        {timeIntervalModel.intervalEnd}
-                      </Typography>
+                        <Typography variant="caption" display="block">
+                          пара {timeIntervalModel.pairNumber}
+                        </Typography>
+                        <Typography variant="caption" display="block">
+                          {timeIntervalModel.intervalStart}-{timeIntervalModel.intervalEnd}
+                        </Typography>
                     </CardContent>
                   </Card>
                 </Box>
@@ -319,9 +320,9 @@ class Timetable extends Component<IProps, IState> {
                           this.lessonCardClickHandler(timeIntervalModel.id || null, lessonCardModel.id || null)
                         }}>
                         <CardContent>
-                          <Typography variant="caption" display="block">
+                          {/*<Typography variant="caption" display="block">
                             {(lessonCardModel.groupId && lessonCardModel.lecturerId) ? lessonCardModel.audienceNumber : ''}
-                          </Typography>
+                          </Typography>*/}
                           <Typography variant="body2" component="p">
                             {groupList.find(group => group.id === lessonCardModel.groupId)?.name}
                           </Typography>
