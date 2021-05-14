@@ -11,20 +11,20 @@
 [https://github.com/YuriiTrofimenko/step-timetable-master.git]
 
 - войти в каталог с проектом
-- выполнить команду развертывания с указанием ip-адреса ПК *address*, на котором оно производится, и порта *port*, на котором будет доступен микросервис бэкенда:
+- выполнить команду развертывания с указанием ip-адреса ПК *address*, на котором оно производится, порта *port*, на котором будет доступен микросервис бэкенда, и значение опционального параметра init (true/false), который указывает стирать старые данные из хранилища и выполнять его инициализацию (по умолчанию - false):
 
-**ITSTEP_TIMETABLE_ADDRESS="*address*" ITSTEP_TIMETABLE_BACKEND_PORT="*port*" docker-compose up**
+**ITSTEP_TIMETABLE_ADDRESS="*address*" ITSTEP_TIMETABLE_BACKEND_PORT="*port*" INIT="*init*" docker-compose up**
 
 , например:
 
-**ITSTEP_TIMETABLE_ADDRESS="*192.168.0.102*" ITSTEP_TIMETABLE_BACKEND_PORT="*8090*" docker-compose up**
+**ITSTEP_TIMETABLE_ADDRESS="*192.168.0.102*" ITSTEP_TIMETABLE_BACKEND_PORT="*8090*"  INIT="*true*" docker-compose up**
 
 - первое развертывание может длиться до нескольких минут
 - при выходе обновлений необходимо в каталоге проекта выполнить команды вытягивания изменений из удаленного репозитория и повторного развертывания с повторным построением образов Docker:
 
 **git pull**
 
-**ITSTEP_TIMETABLE_ADDRESS="*address*" ITSTEP_TIMETABLE_BACKEND_PORT="*port*" docker-compose up --build**
+**ITSTEP_TIMETABLE_ADDRESS="*address*" ITSTEP_TIMETABLE_BACKEND_PORT="*port*" INIT="*init*" docker-compose up --build**
 
 ## Использование
 - интерфейс веб-приложения дотупен сразу после окончания развертывания на всех компьютерах в сети по адресу вида:

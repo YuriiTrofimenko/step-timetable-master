@@ -30,6 +30,7 @@ services:
     environment:
       - CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
       - CUSTOM_EXTERNAL_BACKEND_PORT=${ITSTEP_TIMETABLE_BACKEND_PORT}
+      - CUSTOM_INITDATA_CLEAR=${INIT}
 
   step-timetable-frontend:
     container_name: step-timetable-frontend

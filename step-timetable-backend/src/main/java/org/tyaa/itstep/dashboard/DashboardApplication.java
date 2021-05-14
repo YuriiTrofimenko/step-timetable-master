@@ -87,6 +87,9 @@ public class DashboardApplication {
 		this.userRepository = userRepository;
 		this.timeIntervalReactiveService = timeIntervalReactiveService;
 		return args -> {
+			userRepository.deleteAll();
+			roleRepository.deleteAll();
+			this.createRolesAndUsers();
 			if (isDropNecessary) {
 				audienceRepository.deleteAll().subscribe();
 				groupRepository.deleteAll().subscribe();
@@ -94,10 +97,9 @@ public class DashboardApplication {
 				lessonRepository.deleteAll().subscribe();
 				timeIntervalRepository.deleteAll().subscribe();
 				timeIntervalTemplateRepository.deleteAll().subscribe();
-				userRepository.deleteAll();
-				roleRepository.deleteAll();
+				// userRepository.deleteAll();
+				// roleRepository.deleteAll();
 			}
-			this.createRolesAndUsers();
 		};
 	}
 
@@ -113,7 +115,11 @@ public class DashboardApplication {
 				true
 			)
 		);
-		this.createAudiences();
+		if (isDropNecessary) {
+			this.createAudiences();
+		} else {
+			initialized = true;
+		}
 	}
 
 	private void createAudiences () {
