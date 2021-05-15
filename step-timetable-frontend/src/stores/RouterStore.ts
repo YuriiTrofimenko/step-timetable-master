@@ -2,7 +2,7 @@ import { action, makeObservable, observable, reaction } from "mobx"
 import history from "../history"
 import About from "../components/pages/About"
 import AudienceEditor from "../components/pages/admin/AudienceEditor"
-import Home from "../components/pages/Home"
+// import Home from "../components/pages/Home"
 import Schedule from "../components/pages/Schedule"
 import SignIn from "../components/pages/SignIn"
 import RouteModel from "../models/RouteModel"
@@ -16,34 +16,37 @@ class RouterStore {
 
   // routes for anonymous users
   private anonymousRoutes: Array<RouteModel> = [
-    { uri: '/', name: 'Главная', Component: Home },
-    { uri: '/schedule', name: 'Расписание', Component: Schedule },
+    // { uri: '/', name: 'Главная', Component: Home },
+    // { uri: '/schedule', name: 'Расписание', Component: Schedule },
+    { uri: '/', name: 'Расписание', Component: Schedule },
     { uri: '/about', name: 'О программе', Component: About },
     { uri: '/signin', name: 'Вход', Component: SignIn }
   ]
 
   // routes for logged users
   private loggedRoutes: Array<RouteModel> = [
-    { uri: '/', name: 'Главная', Component: Home },
-    { uri: '/schedule', name: 'Расписание', Component: Schedule },
+    // { uri: '/', name: 'Главная', Component: Home },
+    // { uri: '/schedule', name: 'Расписание', Component: Schedule },
+    { uri: '/', name: 'Расписание', Component: Schedule },
     { uri: '/audiences', name: 'Аудитории', Component: AudienceEditor },
     { uri: '/groups', name: 'Группы', Component: GroupEditor },
     { uri: '/lecturers', name: 'Преподаватели', Component: LecturerEditor },
     { uri: '/templates', name: 'Шаблоны', Component: Templates },
     { uri: '/about', name: 'О программе', Component: About },
-    { uri: '/auth:out', name: 'Выйти', Component: Home }
+    { uri: '/auth:out', name: 'Выйти', Component: Schedule }
   ]
 
     // routes for logged users with role 'ROLE_ADMIN'
   private adminRoutes: Array<RouteModel> = [
-      { uri: '/', name: 'Главная', Component: Home },
-      { uri: '/schedule', name: 'Расписание', Component: Schedule },
+      // { uri: '/', name: 'Главная', Component: Home },
+      // { uri: '/schedule', name: 'Расписание', Component: Schedule },
+      { uri: '/', name: 'Расписание', Component: Schedule },
       { uri: '/audiences', name: 'Аудитории', Component: AudienceEditor },
       { uri: '/groups', name: 'Группы', Component: GroupEditor },
       { uri: '/lecturers', name: 'Преподаватели', Component: LecturerEditor },
       { uri: '/templates', name: 'Шаблоны', Component: Templates },
       { uri: '/about', name: 'О программе', Component: About },
-      { uri: '/auth:out', name: 'Выйти', Component: Home }
+      { uri: '/auth:out', name: 'Выйти', Component: Schedule }
   ]
 
   @observable routes: Array<RouteModel> = this.anonymousRoutes
