@@ -6,7 +6,7 @@ services:
     container_name: step-timetable-mongo
     image: mongo:3.6.23
     ports:
-      - 27018:27017
+      - ${ITSTEP_TIMETABLE_ADDRESS}:27018:27017
     command: --smallfiles
     networks:
       - step_timetable_net
