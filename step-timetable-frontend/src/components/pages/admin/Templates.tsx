@@ -48,9 +48,10 @@ const styles = (theme: Theme) => createStyles({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     '& span': {
-      margin: 0,
+      overflowWrap: 'break-word'
+      /* margin: 0,
       flexGrow: 1,
-      display: 'flex'
+      display: 'flex' */
     }
   },
   card: {
@@ -62,7 +63,7 @@ const styles = (theme: Theme) => createStyles({
     justifyContent: 'space-evenly'
   },
   lessonCard: {
-    textAlign: 'left',
+    textAlign: 'center',
     '& > div': {
       padding: '5px',
       '& > span': {
@@ -238,13 +239,13 @@ class Templates extends Component<IProps, IState> {
                           )
                         }}>
                         <CardContent>
-                          <Typography variant="caption" display="block">
+                          {/*<Typography variant="caption" display="block">
                             {
                               (lessonCardModel.groupId && lessonCardModel.lecturerId)
                                 ? lessonCardModel.audienceNumber
                                 : ''
                             }
-                          </Typography>
+                          </Typography>*/}
                           <Typography variant="body2" component="p">
                             {groupList.find(group => group.id === lessonCardModel.groupId)?.name}
                           </Typography>

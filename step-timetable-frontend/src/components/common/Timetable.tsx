@@ -87,7 +87,7 @@ const styles = (theme: Theme) => createStyles({
   currentTimeIntervalEmptyLessonCards: {
     backgroundColor: 'lightblue',
     opacity: 0.5,
-    textAlign: 'left',
+    textAlign: 'center',
     '& > div': {
       padding: '5px',
       '& > span': {
@@ -98,7 +98,7 @@ const styles = (theme: Theme) => createStyles({
   currentTimeIntervalNonEmptyLessonCards: {
     backgroundColor: '#0a95dd',
     color: '#fff',
-    textAlign: 'left',
+    textAlign: 'center',
     '& > div': {
       padding: '5px',
       '& > span': {

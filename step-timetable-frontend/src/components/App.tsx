@@ -43,6 +43,8 @@ const styles = (theme: Theme) => createStyles({
         },
         title: {
             flexGrow: 1,
+            textAlign: 'center',
+            fontSize: '2rem'
         },
         navBar: {
             color: '#fff',
