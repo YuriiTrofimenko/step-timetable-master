@@ -9,7 +9,8 @@ import GroupModel from '../models/GroupModel'
 
 /* Timetable Header Cards In-Memory Local Storage */
 class TimeIntervalStore {
-  // top level properties 
+  @observable timeStamp: number = 0
+  // top level properties
   @observable timeIntervalList: TimeIntervalModel[] = []
   @observable selectedTimeInterval: TimeIntervalModel | null = null
   @observable currentTimeIntervalId: number | null = null
@@ -26,6 +27,10 @@ class TimeIntervalStore {
   // for MobX version 6
   constructor() {
       makeObservable(this)
+  }
+
+  @action setTimeStamp (timeStamp: number): void {
+    this.timeStamp = timeStamp
   }
 
   @action fetchTimeIntervalList (): void {

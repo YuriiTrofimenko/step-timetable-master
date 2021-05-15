@@ -5,11 +5,14 @@ import { createStyles, Theme } from '@material-ui/core/styles'
 import dateTimeFormatter from 'date-and-time'
 import {CommonStore} from '../../../stores/CommonStore'
 import {UserStore} from '../../../stores/UserStore'
+import {TimeIntervalStore} from '../../../stores/TimeIntervalStore'
+import {reaction} from 'mobx'
 
 interface IProps {}
 
 interface IInjectedProps extends WithStyles<typeof styles>, IProps {
     commonStore: CommonStore,
+    timeIntervalStore: TimeIntervalStore,
     userStore: UserStore
 }
 
@@ -45,13 +48,15 @@ const styles = (theme: Theme) => createStyles({
   }
 })
 
-@inject("commonStore", "userStore")
+@inject("commonStore", "userStore", 'timeIntervalStore')
 @observer
 class DigitalWatch extends Component<IProps, IState> {
-  public intervalID: number
+  // public intervalID: number
+  private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    this.intervalID = 0
+    // this.intervalID = 0
+    this.isComponentMounted = false
     this.state = {
       currentDate: new Date()
     }
@@ -59,35 +64,24 @@ class DigitalWatch extends Component<IProps, IState> {
   get injected() {
     return this.props as IInjectedProps
   }
+  timeStampReaction = reaction(
+      () => this.injected.timeIntervalStore.timeStamp,
+      (timeStamp: number) => {
+        if (this.isComponentMounted) {
+          const currentDate = new Date(timeStamp)
+          this.setState({currentDate: currentDate})
+        }
+      }
+  )
   componentDidMount() {
-    this.intervalID = window.setInterval(
-      () => this.setState({currentDate: new Date()}),
-      1000
-    )
+    this.isComponentMounted = true
   }
-  componentWillUnmount() {
+  /* componentWillUnmount() {
     window.clearInterval(this.intervalID)
-  }
-
-  /* handleUserNameChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const userName = e.target.value
-    if (typeof userName === 'string') {
-      this.injected.userStore.setUserName(userName)
-    }
-  }
-
-  handlePasswordChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const password = e.target.value
-    if (typeof password === 'string') {
-      this.injected.userStore.setPassword(password)
-    }
-  }
-
-  handleSubmitForm = (e: React.MouseEvent) => {
-    e.preventDefault()
-    this.injected.userStore.login()
   } */
-
+  componentWillUnmount() {
+    this.isComponentMounted = false
+  }
   render () {
     // const { loading } = this.injected.commonStore
     const { classes } = this.injected

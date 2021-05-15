@@ -11,7 +11,10 @@ import DigitalWatch from './timetable_parts/DigitalWatch'
 // import TimeIntervalModel from '../../models/TimeIntervalModel'
 import TimeIntervalProgress from './timetable_parts/TimeIntervalProgress'
 import LessonCardModel from '../../models/LessonCardModel'
-import {UserStore} from '../../stores/UserStore'
+import userStore, {UserStore} from '../../stores/UserStore'
+import {reaction} from 'mobx'
+import UserModel from '../../models/UserModel'
+import history from '../../history'
 // import { ValidatorForm } from 'react-material-ui-form-validator'
 
 // type for the explicitly provided props only
@@ -131,10 +134,12 @@ const styles = (theme: Theme) => createStyles({
 @inject('headerCardStore', 'timeIntervalStore', 'groupStore', 'lecturerStore', 'userStore')
 @observer
 class Timetable extends Component<IProps, IState> {
-  public intervalID: number
+  // public intervalID: number
+  private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    this.intervalID = 0
+    // this.intervalID = 0
+    this.isComponentMounted = false
     this.state = {
       lessonDialogOpen: false,
       currentDate: new Date(),
@@ -144,12 +149,51 @@ class Timetable extends Component<IProps, IState> {
   get injected() {
     return this.props as IInjectedProps
   }
+  timeStampReaction = reaction(
+      () => this.injected.timeIntervalStore.timeStamp,
+      (timeStamp: number) => {
+        if (this.isComponentMounted) {
+          const currentDate = new Date(timeStamp)
+          this.setState({currentDate})
+          this.injected.timeIntervalStore.setCurrentTimeIntervalId(
+              this.injected.timeIntervalStore.timeIntervalList.find(
+                  (timeInterval) => {
+                    const currentIntervalStartDate: Date =
+                        dateTimeFormatter.parse(timeInterval.intervalStart, 'H:mm')
+                    const currentIntervalEndDate: Date =
+                        dateTimeFormatter.parse(timeInterval.intervalEnd, 'H:mm')
+                    const currentTimeDate: Date =
+                        dateTimeFormatter.parse(
+                            `${dateTimeFormatter.format(currentDate, 'H')}:${dateTimeFormatter.format(currentDate, 'mm')}`,
+                            'H:mm'
+                        )
+                    return (currentTimeDate >= currentIntervalStartDate) && (currentTimeDate <= currentIntervalEndDate)
+                  }
+              )?.id || null)
+          const currentTimeIntervalId = this.injected.timeIntervalStore.currentTimeIntervalId
+          if (currentTimeIntervalId) {
+            const currentTimeInterval =
+                this.injected.timeIntervalStore.timeIntervalList.find(timeInterval => timeInterval.id === currentTimeIntervalId)
+            if (currentTimeInterval) {
+              const acquiredAudiences: string[] = []
+              currentTimeInterval.lessonCards.forEach(lessonCard => {
+                if (lessonCard.audienceNumber && lessonCard.groupId && lessonCard.lecturerId) {
+                  acquiredAudiences.push(lessonCard.audienceNumber)
+                }
+              })
+              this.setState({'acquiredAudiences': acquiredAudiences})
+            }
+          }
+        }
+      }
+  )
   componentDidMount () {
+    this.isComponentMounted = true
     // this.injected.headerCardStore.fetchHeaderCardList()
     // this.injected.timeIntervalStore.fetchTimeIntervalList()
     // this.injected.groupStore.fetchGroupList()
     // this.injected.lecturerStore.fetchLecturerList()
-    this.intervalID = window.setInterval(
+    /* this.intervalID = window.setInterval(
       () => {
         const currentDate = new Date()
         this.setState({currentDate})
@@ -184,10 +228,11 @@ class Timetable extends Component<IProps, IState> {
         }
       },
       1000
-    )
+    ) */
   }
   componentWillUnmount() {
-    window.clearInterval(this.intervalID)
+    // window.clearInterval(this.intervalID)
+    this.isComponentMounted = false
   }
   lessonCardClickHandler = (intervalRowId: number | null, lessonCardId: number | null) => {
     if (this.injected.userStore.user) {

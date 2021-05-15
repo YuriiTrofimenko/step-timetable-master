@@ -5,6 +5,7 @@ import { createStyles, Theme } from '@material-ui/core/styles'
 import dateTimeFormatter from 'date-and-time'
 import {CommonStore} from '../../../stores/CommonStore'
 import { TimeIntervalStore } from '../../../stores/TimeIntervalStore'
+import {reaction} from 'mobx'
 
 interface IProps {}
 
@@ -52,10 +53,12 @@ const styles = (theme: Theme) => createStyles({
 @inject("commonStore", "timeIntervalStore")
 @observer
 class TimeIntervalProgress extends Component<IProps, IState> {
-  public intervalID: number
+  // public intervalID: number
+  private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    this.intervalID = 0
+    // this.intervalID = 0
+    this.isComponentMounted = false
     this.state = {
       currentDate: new Date(),
       progress: 0,
@@ -74,9 +77,40 @@ class TimeIntervalProgress extends Component<IProps, IState> {
         .map(v => v < 10 ? "0" + v : v)
         // .filter((v,i) => v !== "00" || i > 0)
         // .join(":")
-}
+  }
 
-  componentDidMount() {
+  timeStampReaction = reaction(
+      () => this.injected.timeIntervalStore.timeStamp,
+      (timeStamp: number) => {
+        if (this.isComponentMounted) {
+          const currentDate = new Date(timeStamp)
+          this.setState({currentDate: currentDate})
+          const currentTimeInterval =
+              this.injected.timeIntervalStore.timeIntervalList.find(timeInterval => timeInterval.id === this.injected.timeIntervalStore.currentTimeIntervalId)
+          if (currentTimeInterval) {
+            const timePassed =
+                dateTimeFormatter.subtract(
+                    dateTimeFormatter.parse(`${dateTimeFormatter.format(this.state.currentDate, 'H')}:${dateTimeFormatter.format(this.state.currentDate, 'mm')}`, 'H:mm'),
+                    new Date(dateTimeFormatter.parse(currentTimeInterval.intervalStart, 'H:mm'))
+                )
+            const progress = timePassed.toMinutes() * 100 / 80
+            this.setState({'progress': progress})
+            const timeLeft =
+                dateTimeFormatter.subtract(
+                    new Date(dateTimeFormatter.parse(currentTimeInterval.intervalEnd, 'H:mm')),
+                    dateTimeFormatter.parse(`${dateTimeFormatter.format(this.state.currentDate, 'H')}:${dateTimeFormatter.format(this.state.currentDate, 'mm')}`, 'H:mm')
+                )
+            const timeLeftSeconds = timeLeft.toSeconds()
+            const timeLeftHHMMSSArray = this.toHHMMSS(timeLeftSeconds.toString())
+            this.setState({'timeLeft': `${timeLeftHHMMSSArray[0]} ч ${timeLeftHHMMSSArray[1]} мин`})
+          } else {
+            this.setState({'progress': 0})
+          }
+        }
+      }
+  )
+
+  /* componentDidMount() {
     this.intervalID = window.setInterval(
       () => {
         this.setState({currentDate: new Date()})
@@ -105,11 +139,13 @@ class TimeIntervalProgress extends Component<IProps, IState> {
       },
       1000
     )
+  } */
+  componentDidMount() {
+    this.isComponentMounted = true
   }
   componentWillUnmount() {
-    window.clearInterval(this.intervalID)
+    this.isComponentMounted = false
   }
-
   render () {
     const { classes } = this.injected
     return (
