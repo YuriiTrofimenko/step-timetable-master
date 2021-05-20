@@ -51,12 +51,12 @@ const styles = (theme: Theme) => createStyles({
 @inject("commonStore", "userStore", 'timeIntervalStore')
 @observer
 class DigitalWatch extends Component<IProps, IState> {
-  // public intervalID: number
-  private isComponentMounted: boolean
+  public intervalID: number
+  // private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    // this.intervalID = 0
-    this.isComponentMounted = false
+    this.intervalID = 0
+    // this.isComponentMounted = false
     this.state = {
       currentDate: new Date()
     }
@@ -64,7 +64,7 @@ class DigitalWatch extends Component<IProps, IState> {
   get injected() {
     return this.props as IInjectedProps
   }
-  timeStampReaction = reaction(
+  /* timeStampReaction = reaction(
       () => this.injected.timeIntervalStore.timeStamp,
       (timeStamp: number) => {
         if (this.isComponentMounted) {
@@ -72,16 +72,22 @@ class DigitalWatch extends Component<IProps, IState> {
           this.setState({currentDate: currentDate})
         }
       }
-  )
-  componentDidMount() {
+  ) */
+  /* componentDidMount() {
     this.isComponentMounted = true
+  } */
+  componentDidMount () {
+    this.intervalID = window.setInterval(
+        () => this.setState({currentDate: new Date()}),
+        1000
+    )
+  }
+  componentWillUnmount () {
+    window.clearInterval(this.intervalID)
   }
   /* componentWillUnmount() {
-    window.clearInterval(this.intervalID)
-  } */
-  componentWillUnmount() {
     this.isComponentMounted = false
-  }
+  } */
   render () {
     // const { loading } = this.injected.commonStore
     const { classes } = this.injected

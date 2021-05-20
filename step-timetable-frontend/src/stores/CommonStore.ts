@@ -39,11 +39,11 @@ class CommonStore {
         const socket = new SockJS(this.BASE_WEBSOCKET_URL)
         const stompClient = Stomp.over(socket)
         stompClient.connect({},  (frame) => {
-            console.log('Connected: ' + frame)
-            stompClient.subscribe('/topic/timestamp', (data) => {
+            // console.log('Connected: ' + frame)
+            /* stompClient.subscribe('/topic/timestamp', (data) => {
                 console.log('data.body: ' + data.body)
                 timeIntervalStore.setTimeStamp(Number(data.body))
-            })
+            }) */
             stompClient.subscribe('/topic/audiences', (data) => {
                 headerCardStore.setHeaderCardList(this.parseHttpResponseBody(data.body))
             })

@@ -170,7 +170,7 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
         System.out.println("currentDate.getDay() = " + currentDate.getDay());
         System.out.println("currentDate.getHours() = " + currentDate.getHours());
         System.out.println(" *** ");
-        this.sendTimeStamp(currentDate.getTime());
+        // this.sendTimeStamp(currentDate.getTime());
         if (appliedTemplateIndex == null && currentDate.getHours() >= 8 && currentDate.getHours() < 23) {
             appliedTemplateIndex = currentDate.getDay();
             timeIntervalTemplateRepository

@@ -134,12 +134,12 @@ const styles = (theme: Theme) => createStyles({
 @inject('headerCardStore', 'timeIntervalStore', 'groupStore', 'lecturerStore', 'userStore')
 @observer
 class Timetable extends Component<IProps, IState> {
-  // public intervalID: number
-  private isComponentMounted: boolean
+  public intervalID: number
+  // private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    // this.intervalID = 0
-    this.isComponentMounted = false
+    this.intervalID = 0
+    // this.isComponentMounted = false
     this.state = {
       lessonDialogOpen: false,
       currentDate: new Date(),
@@ -149,7 +149,7 @@ class Timetable extends Component<IProps, IState> {
   get injected() {
     return this.props as IInjectedProps
   }
-  timeStampReaction = reaction(
+  /* timeStampReaction = reaction(
       () => this.injected.timeIntervalStore.timeStamp,
       (timeStamp: number) => {
         if (this.isComponentMounted) {
@@ -186,14 +186,14 @@ class Timetable extends Component<IProps, IState> {
           }
         }
       }
-  )
+  ) */
   componentDidMount () {
-    this.isComponentMounted = true
+    // this.isComponentMounted = true
     // this.injected.headerCardStore.fetchHeaderCardList()
     // this.injected.timeIntervalStore.fetchTimeIntervalList()
     // this.injected.groupStore.fetchGroupList()
     // this.injected.lecturerStore.fetchLecturerList()
-    /* this.intervalID = window.setInterval(
+    this.intervalID = window.setInterval(
       () => {
         const currentDate = new Date()
         this.setState({currentDate})
@@ -228,11 +228,11 @@ class Timetable extends Component<IProps, IState> {
         }
       },
       1000
-    ) */
+    )
   }
   componentWillUnmount() {
-    // window.clearInterval(this.intervalID)
-    this.isComponentMounted = false
+    window.clearInterval(this.intervalID)
+    // this.isComponentMounted = false
   }
   lessonCardClickHandler = (intervalRowId: number | null, lessonCardId: number | null) => {
     if (this.injected.userStore.user) {

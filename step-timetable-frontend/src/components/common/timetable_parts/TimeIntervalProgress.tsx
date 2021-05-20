@@ -53,12 +53,12 @@ const styles = (theme: Theme) => createStyles({
 @inject("commonStore", "timeIntervalStore")
 @observer
 class TimeIntervalProgress extends Component<IProps, IState> {
-  // public intervalID: number
-  private isComponentMounted: boolean
+  public intervalID: number
+  // private isComponentMounted: boolean
   constructor(props: IProps) {
     super(props)
-    // this.intervalID = 0
-    this.isComponentMounted = false
+    this.intervalID = 0
+    // this.isComponentMounted = false
     this.state = {
       currentDate: new Date(),
       progress: 0,
@@ -79,7 +79,7 @@ class TimeIntervalProgress extends Component<IProps, IState> {
         // .join(":")
   }
 
-  timeStampReaction = reaction(
+  /* timeStampReaction = reaction(
       () => this.injected.timeIntervalStore.timeStamp,
       (timeStamp: number) => {
         if (this.isComponentMounted) {
@@ -108,9 +108,9 @@ class TimeIntervalProgress extends Component<IProps, IState> {
           }
         }
       }
-  )
+  ) */
 
-  /* componentDidMount() {
+  componentDidMount() {
     this.intervalID = window.setInterval(
       () => {
         this.setState({currentDate: new Date()})
@@ -139,13 +139,16 @@ class TimeIntervalProgress extends Component<IProps, IState> {
       },
       1000
     )
-  } */
-  componentDidMount() {
-    this.isComponentMounted = true
   }
   componentWillUnmount() {
-    this.isComponentMounted = false
+    window.clearInterval(this.intervalID)
   }
+  /* componentDidMount() {
+    this.isComponentMounted = true
+  } */
+  /* componentWillUnmount() {
+    this.isComponentMounted = false
+  } */
   render () {
     const { classes } = this.injected
     return (
