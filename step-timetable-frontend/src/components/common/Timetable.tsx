@@ -52,6 +52,7 @@ const styles = (theme: Theme) => createStyles({
     justifyContent: 'space-evenly',
     '& span': {
       overflowWrap: 'break-word'
+      // hyphens: 'auto'
       /* margin: 0,
       flexGrow: 1,
       display: 'flex' */
