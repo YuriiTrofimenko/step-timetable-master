@@ -172,7 +172,13 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
         System.out.println(" *** ");
         // this.sendTimeStamp(currentDate.getTime());
         if (appliedTemplateIndex == null && currentDate.getHours() >= 8 && currentDate.getHours() < 23) {
-            appliedTemplateIndex = currentDate.getDay() + 1;
+            if (currentDate.getDay() > 0) {
+                // If Not Sunday [1; 6] -> [1; 6]
+                appliedTemplateIndex = currentDate.getDay();
+            } else {
+                // If Sunday 0 -> 7
+                appliedTemplateIndex = 7;
+            }
             timeIntervalTemplateRepository
                 .findTimeIntervalTemplateModelByDayOfWeekNumber(appliedTemplateIndex)
                 .subscribe(
