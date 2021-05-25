@@ -251,18 +251,17 @@ class Timetable extends Component<IProps, IState> {
     this.injected.timeIntervalStore.unsetSelectedLessonCard()
   }
   lessonDialogDeleteHandler = () => {
-    this.injected.timeIntervalStore.deleteLessonCard()
-    this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalStore.unsetSelectedLessonCard()
-  }
-  // lessonDialogOkHandler = (e: React.FormEvent<HTMLFormElement>) => {
-  lessonDialogOkHandler = () => {
-    console.log('lessonDialogOkHandler', 1)
-    // e.preventDefault()
-    console.log('lessonDialogOkHandler', 2)
+    // this.injected.timeIntervalStore.deleteLessonCard()
+    // this.setState({lessonDialogOpen: false})
+    // this.injected.timeIntervalStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalStore.setLessonCardGroupId('')
+    this.injected.timeIntervalStore.setLessonCardLecturerId('')
     this.injected.timeIntervalStore.saveLessonCard()
     this.setState({lessonDialogOpen: false})
-    // this.injected.timeIntervalStore.unsetSelectedLessonCard()
+  }
+  lessonDialogOkHandler = () => {
+    this.injected.timeIntervalStore.saveLessonCard()
+    this.setState({lessonDialogOpen: false})
   }
   groupSelectedHandler = (e: React.ChangeEvent<{ value: unknown }>) => {
     const lessonCardGroupId = e.target.value
@@ -275,7 +274,6 @@ class Timetable extends Component<IProps, IState> {
   }
   lecturerSelectedHandler = (e: React.ChangeEvent<{ value: unknown }>) => {
     const lessonCardLecturerId = e.target.value
-    console.log('typeof lessonCardLecturerId', typeof lessonCardLecturerId)
     if (typeof lessonCardLecturerId === 'string') {
       this.injected.timeIntervalStore.setLessonCardLecturerId(lessonCardLecturerId)
       document?.getElementById('lecturerValidator')
@@ -459,7 +457,7 @@ class Timetable extends Component<IProps, IState> {
                 Удалить
               </Button>
               <Button color="primary" onClick={this.lessonDialogOkHandler}>
-                {selectedLessonCard?.lecturerId ? 'Обновить' : 'Добавить'}
+                {selectedLessonCard?.id ? 'Обновить' : 'Добавить'}
               </Button>
             </DialogActions>
           </form>

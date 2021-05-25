@@ -58,6 +58,8 @@ public class DashboardApplication {
 	private UserRepository userRepository;
 	private TimeIntervalReactiveService timeIntervalReactiveService;
 
+	private boolean timeIntervalTemplateNeedsUpdate = false;
+
 	public static void main (String[] args) {
 		// System.getenv().entrySet().forEach(System.out::println);
 		SpringApplication.run(DashboardApplication.class, args);
@@ -89,18 +91,54 @@ public class DashboardApplication {
 		return args -> {
 			userRepository.deleteAll();
 			roleRepository.deleteAll();
-			this.createRolesAndUsers();
 			if (isDropNecessary) {
-				audienceRepository.deleteAll().subscribe();
-				groupRepository.deleteAll().subscribe();
-				lecturerRepository.deleteAll().subscribe();
-				lessonRepository.deleteAll().subscribe();
-				timeIntervalRepository.deleteAll().subscribe();
-				timeIntervalTemplateRepository.deleteAll().subscribe();
+				audienceRepository.deleteAll().block();
+				groupRepository.deleteAll().block();
+				lecturerRepository.deleteAll().block();
+				lessonRepository.deleteAll().block();
+				timeIntervalRepository.deleteAll().block();
+				timeIntervalTemplateRepository.deleteAll().block();
 				// userRepository.deleteAll();
 				// roleRepository.deleteAll();
 			}
+			this.createRolesAndUsers();
 		};
+	}
+
+	private void checkNFixTemplates () {
+		List<TimeIntervalTemplateModel> templates =
+			this.timeIntervalTemplateRepository.findAll().collectList().block();
+		templates.forEach(template -> {
+			List<TimeIntervalModel> timeIntervalList =
+				template.getTimeIntervalModels();
+			timeIntervalList.forEach(
+				timeIntervalModel -> {
+					List<AudienceModel> audiences =
+						audienceRepository.findAll().collectList().block();
+					audiences.forEach(audienceModel -> {
+						Optional<LessonModel> lessonModelOptional =
+							timeIntervalModel.getLessons().stream()
+								.filter(
+									lessonModel -> lessonModel.getAudienceNumber().equals(audienceModel.getAudienceNumber())
+								).findFirst();
+						if (!lessonModelOptional.isPresent()) {
+							timeIntervalModel.getLessons().add(
+								LessonModel.builder()
+									.id(ObjectId.get().toString())
+									.audienceNumber(audienceModel.getAudienceNumber())
+									.build()
+							);
+							timeIntervalTemplateNeedsUpdate = true;
+						}
+					});
+				}
+			);
+			if (timeIntervalTemplateNeedsUpdate) {
+				timeIntervalTemplateRepository.save(template).block();
+				timeIntervalTemplateNeedsUpdate = false;
+			}
+		});
+
 	}
 
 	private void createRolesAndUsers () {
@@ -118,6 +156,7 @@ public class DashboardApplication {
 		if (isDropNecessary) {
 			this.createAudiences();
 		} else {
+			checkNFixTemplates();
 			initialized = true;
 		}
 	}

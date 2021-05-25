@@ -120,15 +120,19 @@ class Templates extends Component<IProps, IState> {
     this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   lessonDialogDeleteHandler = () => {
-    this.injected.timeIntervalTemplateStore.deleteLessonCard()
+    // this.injected.timeIntervalTemplateStore.deleteLessonCard()
+    // this.setState({lessonDialogOpen: false})
+    // this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
+    this.injected.timeIntervalTemplateStore.setLessonCardGroupId('')
+    this.injected.timeIntervalTemplateStore.setLessonCardLecturerId('')
+    this.injected.timeIntervalTemplateStore.saveLessonCard()
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   lessonDialogOkHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     this.injected.timeIntervalTemplateStore.saveLessonCard()
     this.setState({lessonDialogOpen: false})
-    this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
+    // this.injected.timeIntervalTemplateStore.unsetSelectedLessonCard()
   }
   groupSelectedHandler = (e: React.ChangeEvent<{ value: unknown }>) => {
     const lessonCardGroupId = e.target.value
@@ -338,7 +342,7 @@ class Templates extends Component<IProps, IState> {
                 Удалить
               </Button>
               <Button type='submit' color="primary">
-                {selectedLessonCard?.lecturerId ? 'Обновить' : 'Добавить'}
+                {selectedLessonCard?.id ? 'Обновить' : 'Добавить'}
               </Button>
             </DialogActions>
           </form>

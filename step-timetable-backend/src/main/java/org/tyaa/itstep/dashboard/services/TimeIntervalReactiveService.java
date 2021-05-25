@@ -31,6 +31,7 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
     private final TimeIntervalTemplateRepository timeIntervalTemplateRepository;
     private final AudienceRepository audienceRepository;
     // private final LessonRepository lessonRepository;
+    // private boolean timeIntervalTemplateNeedsUpdate = false;
 
     public TimeIntervalReactiveService(
         SimpMessagingTemplate simpMessagingTemplate,
@@ -206,6 +207,7 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
                                                         .audienceNumber(audienceModel.getAudienceNumber())
                                                         .build()
                                                 );
+                                                // timeIntervalTemplateNeedsUpdate = true;
                                             }
                                         }
                                     );
@@ -213,6 +215,10 @@ public class TimeIntervalReactiveService implements IReactiveServiceBase<TimeInt
                             );
                         this.timeIntervalList.clear();
                         this.timeIntervalList.addAll(timeIntervalList);
+                        /* if (timeIntervalTemplateNeedsUpdate) {
+                            timeIntervalTemplateRepository.save(timeIntervalTemplateModel);
+                            timeIntervalTemplateNeedsUpdate = false;
+                        } */
                         this.notifyChanges();
                     });
         } else if (
