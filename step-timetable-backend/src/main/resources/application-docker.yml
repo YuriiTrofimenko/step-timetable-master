@@ -10,6 +10,7 @@ server.servlet.context-path: /timetable
 spring.data.mongodb.host: step-timetable-mongo
 spring.data.mongodb.port: 27017
 spring.data.mongodb.database: timetable
+spring.data.mongodb.authentication-database: admin
 # ===============================
 # Custom Static Data
 # ===============================

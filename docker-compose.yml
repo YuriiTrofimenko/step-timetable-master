@@ -8,6 +8,9 @@ services:
     ports:
       - ${ITSTEP_TIMETABLE_ADDRESS}:27018:27017
     command: --smallfiles
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_LOGIN}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     networks:
       - step_timetable_net
 
@@ -31,6 +34,8 @@ services:
       - CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
       - CUSTOM_EXTERNAL_BACKEND_PORT=${ITSTEP_TIMETABLE_BACKEND_PORT}
       - CUSTOM_INITDATA_CLEAR=${INIT}
+      - SPRING_DATA_MONGODB_USERNAME=${MONGO_LOGIN}
+      - SPRING_DATA_MONGODB_PASSWORD=${MONGO_PASSWORD}
 
   step-timetable-frontend:
     container_name: step-timetable-frontend
