@@ -13,6 +13,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     networks:
       - step_timetable_net
+    restart: unless-stopped
 
   step-timetable-backend:
     container_name: step-timetable-backend
@@ -36,6 +37,7 @@ services:
       - CUSTOM_INITDATA_CLEAR=${INIT}
       - SPRING_DATA_MONGODB_USERNAME=${MONGO_LOGIN}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGO_PASSWORD}
+    restart: unless-stopped
 
   step-timetable-frontend:
     container_name: step-timetable-frontend
@@ -53,6 +55,7 @@ services:
     environment:
       - REACT_APP_CUSTOM_EXTERNAL_IP=${ITSTEP_TIMETABLE_ADDRESS}
       - REACT_APP_CUSTOM_EXTERNAL_BACKEND_PORT=${ITSTEP_TIMETABLE_BACKEND_PORT}
+    restart: unless-stopped
 
 networks:
   step_timetable_net:
