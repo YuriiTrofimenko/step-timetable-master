@@ -209,8 +209,8 @@ class Timetable extends Component<IProps, IState> {
                 dateTimeFormatter.parse(
                   `${dateTimeFormatter.format(currentDate, 'H')}:${dateTimeFormatter.format(currentDate, 'mm')}`,
                   'H:mm'
-                )
-                return (currentTimeDate >= currentIntervalStartDate) && (currentTimeDate <= currentIntervalEndDate)
+                ) // начало применения определенной временной полосы - за 10 минут минус 3 секунды до ее начала (600000 минус 3000 миллисекунд)
+                return (currentTimeDate >= new Date( currentIntervalStartDate.getTime() - 597000 )) && (currentTimeDate <= currentIntervalEndDate)
             }
           )?.id || null)
         const currentTimeIntervalId = this.injected.timeIntervalStore.currentTimeIntervalId

@@ -17,7 +17,8 @@ interface IInjectedProps extends WithStyles<typeof styles>, IProps {
 interface IState {
   currentDate: Date,
   progress: number,
-  timeLeft: string
+  timeLeft: string,
+  visibility: boolean
 }
 
 const styles = (theme: Theme) => createStyles({
@@ -62,7 +63,8 @@ class TimeIntervalProgress extends Component<IProps, IState> {
     this.state = {
       currentDate: new Date(),
       progress: 0,
-      timeLeft: ''
+      timeLeft: '',
+      visibility: false
     }
   }
   get injected() {
@@ -123,18 +125,28 @@ class TimeIntervalProgress extends Component<IProps, IState> {
               dateTimeFormatter.parse(`${dateTimeFormatter.format(this.state.currentDate, 'H')}:${dateTimeFormatter.format(this.state.currentDate, 'mm')}`, 'H:mm'),
               new Date(dateTimeFormatter.parse(currentTimeInterval.intervalStart, 'H:mm'))
             )
+          console.log('timePassed.toMinutes() = ' + timePassed.toMinutes())
+          if (timePassed.toMinutes() < 0) {
+            this.setState({'visibility': false})
+            this.setState({'progress': 0})
+            this.setState({'timeLeft': ''})
+            return
+          } else if (!this.state.visibility) {
+            this.setState({'visibility': true})
+          }
           const progress = timePassed.toMinutes() * 100 / 80
           this.setState({'progress': progress})
           const timeLeft =
-            dateTimeFormatter.subtract(
-              new Date(dateTimeFormatter.parse(currentTimeInterval.intervalEnd, 'H:mm')),
-              dateTimeFormatter.parse(`${dateTimeFormatter.format(this.state.currentDate, 'H')}:${dateTimeFormatter.format(this.state.currentDate, 'mm')}`, 'H:mm')
-            )
+              dateTimeFormatter.subtract(
+                  new Date(dateTimeFormatter.parse(currentTimeInterval.intervalEnd, 'H:mm')),
+                  dateTimeFormatter.parse(`${dateTimeFormatter.format(this.state.currentDate, 'H')}:${dateTimeFormatter.format(this.state.currentDate, 'mm')}`, 'H:mm')
+              )
           const timeLeftSeconds = timeLeft.toSeconds()
           const timeLeftHHMMSSArray = this.toHHMMSS(timeLeftSeconds.toString())
           this.setState({'timeLeft': `${timeLeftHHMMSSArray[0]} ч ${timeLeftHHMMSSArray[1]} мин`})
         } else {
           this.setState({'progress': 0})
+          this.setState({'timeLeft': ''})
         }
       },
       1000
@@ -150,6 +162,7 @@ class TimeIntervalProgress extends Component<IProps, IState> {
     this.isComponentMounted = false
   } */
   render () {
+    if (!this.state.visibility) return null
     const { classes } = this.injected
     return (
         <div className={classes.root}>
